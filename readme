@@ -1,54 +1,186 @@
-Guia de Inicialização da Aplicação
-Este guia detalha os passos necessários para configurar, migrar o banco de dados e iniciar tanto o backend quanto o frontend da aplicação.
+Documentação da API de Produtos
+Esta documentação descreve os endpoints da API para gerenciamento de produtos, incluindo operações de listagem, recuperação, criação, atualização e exclusão.
 
-1. Backend (Pasta Raiz do Projeto)
-Nesta seção, você executará os comandos para gerenciar o banco de dados e iniciar o servidor backend.
+Base URL
+A URL base para todos os endpoints é assumida como /.
 
-Acesse a Pasta Raiz do Projeto (Backend):
-Primeiramente, certifique-se de que você está na pasta raiz do seu projeto backend. É onde o seu package.json principal (do backend) está localizado.
+Endpoints
+1. Listar Todos os Produtos
+Endpoint: /products
 
-Bash
+Método HTTP: GET
 
-Gere as Migrações do Prisma:
-Este comando é crucial para criar os artefatos do cliente Prisma e, se necessário, novos arquivos de migração baseados nas alterações do seu schema.prisma.
+Descrição: Retorna uma lista de todos os produtos disponíveis no sistema.
 
-Bash
+Parâmetros de Query: Nenhum.
 
-npm prisma generate
-Observação: Se você fez alterações no seu schema.prisma e precisa criar uma nova migração, use npx prisma migrate dev --name <nome_da_sua_migracao> antes de rodar o generate. O generate apenas prepara o cliente Prisma para interagir com o DB.
-Aplique as Migrações do Prisma (Deploy):
-Com este comando, você aplica as migrações pendentes ao seu banco de dados, garantindo que ele esteja sincronizado com o esquema definido no Prisma.
+Corpo da Requisição: Nenhum.
 
-Bash
+Respostas Possíveis:
 
-npm prisma migrate deploy
-Atenção: Verifique se sua string de conexão com o banco de dados (DATABASE_URL no seu arquivo .env) está configurada corretamente.
-Inicie o Servidor Backend:
-Agora, você pode iniciar a aplicação backend. Este comando compila e executa o arquivo src/index.ts, que é o ponto de entrada do seu servidor Node.js/TypeScript.
+200 OK: Retorna um array de objetos de produto.
 
-Bash
+[
+  {
+    "id": "uuid-do-produto-1",
+    "name": "Smartphone X",
+    "description": "Um smartphone de última geração.",
+    "price": 999.99,
+    "stock": 150
+  },
+  {
+    "id": "uuid-do-produto-2",
+    "name": "Notebook Pro",
+    "description": "Notebook potente para profissionais.",
+    "price": 1500.00,
+    "stock": 75
+  }
+]
 
-npx tsx src/index.ts
-Dica: Certifique-se de que todas as dependências do projeto foram instaladas (npm install na pasta raiz do backend, caso ainda não tenha feito).
-2. Frontend (product-management-app-frontend)
-Após iniciar o backend, é hora de configurar e rodar o frontend.
 
-Navegue para a Pasta do Frontend:
-Mude o diretório para a pasta específica do seu projeto frontend.
+500 Internal Server Error: Em caso de erro no servidor.
 
-Bash
+2. Obter Produto por ID
+Endpoint: /products/:id
 
-cd product-management-app-frontend
-Instale as Dependências do Frontend:
-Este comando instala todas as dependências listadas no package.json do seu frontend. É um passo essencial para que o frontend funcione corretamente.
+Método HTTP: GET
 
-Bash
+Descrição: Retorna os detalhes de um produto específico com base no seu ID.
 
-npm install
-Importante: Faça isso sempre que clonar o repositório pela primeira vez ou quando novas dependências forem adicionadas ao projeto.
-Inicie a Aplicação Frontend:
-Por fim, inicie o servidor de desenvolvimento do frontend. Isso geralmente abrirá a aplicação no seu navegador padrão, em um endereço como http://localhost:3000 (a porta pode variar).
+Parâmetros de Rota:
 
-Bash
+id (string, obrigatório): O ID único do produto.
 
-npm start
+Corpo da Requisição: Nenhum.
+
+Respostas Possíveis:
+
+200 OK: Retorna o objeto do produto.
+
+{
+  "id": "uuid-do-produto-1",
+  "name": "Smartphone X",
+  "description": "Um smartphone de última geração.",
+  "price": 999.99,
+  "stock": 150
+}
+
+
+404 Not Found: Se o produto com o ID fornecido não for encontrado.
+
+500 Internal Server Error: Em caso de erro no servidor.
+
+3. Criar Novo Produto
+Endpoint: /products
+
+Método HTTP: POST
+
+Descrição: Cria um novo produto no sistema.
+
+Parâmetros de Query: Nenhum.
+
+Corpo da Requisição: (JSON)
+
+name (string, obrigatório): O nome do produto.
+
+description (string, opcional): Uma descrição detalhada do produto.
+
+price (number, obrigatório): O preço do produto.
+
+stock (number, obrigatório): A quantidade em estoque do produto.
+
+Observação: O campo createdAt é gerado automaticamente pelo servidor e não deve ser incluído na requisição.
+
+{
+  "name": "Novo Produto Incrível",
+  "description": "Este é um produto recém-adicionado ao nosso catálogo.",
+  "price": 29.99,
+  "stock": 500
+}
+
+
+Respostas Possíveis:
+
+201 Created: Retorna o objeto do produto recém-criado.
+
+{
+  "id": "uuid-do-novo-produto",
+  "name": "Novo Produto Incrível",
+  "description": "Este é um produto recém-adicionado ao nosso catálogo.",
+  "price": 29.99,
+  "stock": 500
+}
+
+
+400 Bad Request: Se os dados fornecidos no corpo da requisição forem inválidos ou incompletos.
+
+500 Internal Server Error: Em caso de erro no servidor.
+
+4. Atualizar Produto Existente
+Endpoint: /products/:id
+
+Método HTTP: PUT
+
+Descrição: Atualiza os detalhes de um produto existente com base no seu ID.
+
+Parâmetros de Rota:
+
+id (string, obrigatório): O ID único do produto a ser atualizado.
+
+Corpo da Requisição: (JSON)
+
+name (string, opcional): O novo nome do produto.
+
+description (string, opcional): A nova descrição do produto.
+
+price (number, opcional): O novo preço do produto.
+
+stock (number, opcional): A nova quantidade em estoque do produto.
+
+Observação: Inclua apenas os campos que deseja atualizar.
+
+{
+  "price": 35.50,
+  "stock": 480
+}
+
+
+Respostas Possíveis:
+
+200 OK: Retorna o objeto do produto atualizado.
+
+{
+  "id": "uuid-do-produto-existente",
+  "name": "Nome do Produto",
+  "description": "Descrição atualizada.",
+  "price": 35.50,
+  "stock": 480
+}
+
+
+400 Bad Request: Se os dados fornecidos no corpo da requisição forem inválidos.
+
+404 Not Found: Se o produto com o ID fornecido não for encontrado.
+
+500 Internal Server Error: Em caso de erro no servidor.
+
+5. Excluir Produto
+Endpoint: /products/:id
+
+Método HTTP: DELETE
+
+Descrição: Exclui um produto do sistema com base no seu ID.
+
+Parâmetros de Rota:
+
+id (string, obrigatório): O ID único do produto a ser excluído.
+
+Corpo da Requisição: Nenhum.
+
+Respostas Possíveis:
+
+204 No Content: Indica que o produto foi excluído com sucesso (nenhum conteúdo é retornado).
+
+404 Not Found: Se o produto com o ID fornecido não for encontrado.
+
+500 Internal Server Error: Em caso de erro no servidor.
