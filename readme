@@ -1,0 +1,54 @@
+Guia de Inicialização da Aplicação
+Este guia detalha os passos necessários para configurar, migrar o banco de dados e iniciar tanto o backend quanto o frontend da aplicação.
+
+1. Backend (Pasta Raiz do Projeto)
+Nesta seção, você executará os comandos para gerenciar o banco de dados e iniciar o servidor backend.
+
+Acesse a Pasta Raiz do Projeto (Backend):
+Primeiramente, certifique-se de que você está na pasta raiz do seu projeto backend. É onde o seu package.json principal (do backend) está localizado.
+
+Bash
+
+Gere as Migrações do Prisma:
+Este comando é crucial para criar os artefatos do cliente Prisma e, se necessário, novos arquivos de migração baseados nas alterações do seu schema.prisma.
+
+Bash
+
+npm prisma generate
+Observação: Se você fez alterações no seu schema.prisma e precisa criar uma nova migração, use npx prisma migrate dev --name <nome_da_sua_migracao> antes de rodar o generate. O generate apenas prepara o cliente Prisma para interagir com o DB.
+Aplique as Migrações do Prisma (Deploy):
+Com este comando, você aplica as migrações pendentes ao seu banco de dados, garantindo que ele esteja sincronizado com o esquema definido no Prisma.
+
+Bash
+
+npm prisma migrate deploy
+Atenção: Verifique se sua string de conexão com o banco de dados (DATABASE_URL no seu arquivo .env) está configurada corretamente.
+Inicie o Servidor Backend:
+Agora, você pode iniciar a aplicação backend. Este comando compila e executa o arquivo src/index.ts, que é o ponto de entrada do seu servidor Node.js/TypeScript.
+
+Bash
+
+npx tsx src/index.ts
+Dica: Certifique-se de que todas as dependências do projeto foram instaladas (npm install na pasta raiz do backend, caso ainda não tenha feito).
+2. Frontend (product-management-app-frontend)
+Após iniciar o backend, é hora de configurar e rodar o frontend.
+
+Navegue para a Pasta do Frontend:
+Mude o diretório para a pasta específica do seu projeto frontend.
+
+Bash
+
+cd product-management-app-frontend
+Instale as Dependências do Frontend:
+Este comando instala todas as dependências listadas no package.json do seu frontend. É um passo essencial para que o frontend funcione corretamente.
+
+Bash
+
+npm install
+Importante: Faça isso sempre que clonar o repositório pela primeira vez ou quando novas dependências forem adicionadas ao projeto.
+Inicie a Aplicação Frontend:
+Por fim, inicie o servidor de desenvolvimento do frontend. Isso geralmente abrirá a aplicação no seu navegador padrão, em um endereço como http://localhost:3000 (a porta pode variar).
+
+Bash
+
+npm start
